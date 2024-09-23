@@ -3,13 +3,49 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
+
+    const ADMIN_ROLE = 'administrator';
+
+    const RESPONSIBLE_ROLE = 'responsible';
+
+    const ASSIGN_ROLE = 'assign';
+
+    const PERMISSIONS = [
+        'view',
+        'edit',
+        'create',
+        'delete'
+    ];
+
+    const ADMIN_ROLE_PERMISSIONS = [
+        'view',
+        'edit',
+        'create',
+        'delete'
+    ];
+
+    const RESPONSIBLE_ROLE_PERMISSIONS = [
+        'view',
+        'create'
+    ];
+
+    const ASSIGN_ROLE_PERMISSIONS = [
+        'view'
+    ];
+
+    const COMPOSE_PERMISSIONS_AND_ROLES = [
+        'administrator' => self::ADMIN_ROLE_PERMISSIONS,
+        'responsible' => self::RESPONSIBLE_ROLE_PERMISSIONS,
+        'assign' => self::ASSIGN_ROLE_PERMISSIONS,
+    ];
 
     /**
      * The attributes that are mass assignable.
