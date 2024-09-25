@@ -12,12 +12,9 @@ class UserController extends Controller
         private readonly UserRepositoryInterface $userRepository
     ) {}
 
-    public function index(Request $request) {
-        $page       = $request->input('page', 1);
-        $per_page   = $request->input('per_page', 10);
-        $order      = $request->input('order', 'ASC');
-
-        $data = $this->userRepository->getAll($page, $per_page, $order);
+    public function index(Request $request)
+    {
+        $data = $this->userRepository->getAll($request);
 
         return $this->sendResponse(new UserResourceCollection($data), 'Showing users');
     }

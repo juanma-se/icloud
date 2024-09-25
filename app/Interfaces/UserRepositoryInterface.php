@@ -2,17 +2,12 @@
 
 namespace App\Interfaces;
 
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 interface UserRepositoryInterface
 {
-    public function getAll($page = 1, $per_page = 25);
-
-    public function getById($id);
-
-    public function store(array $data);
-
-    public function update(array $data, $id);
-
-    public function destroy($id);
+    public function getAll(Request $request): LengthAwarePaginator;
 
     public function register(array $data);
 }

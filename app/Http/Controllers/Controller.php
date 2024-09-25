@@ -56,35 +56,4 @@ abstract class Controller
 
         return response()->json($response, $code);
     }
-
-    /**
-     * Send a response with data, message and pagination information.
-     *
-     * @param mixed $data The data to be included in the response.
-     * @param bool $message Optional. A message to be included in the response.
-     * @param array $pagination An array containing pagination information:
-     *                            - total_pages: The total number of pages.
-     *                            - current_page: The current page number.
-     *                            - per_page: The number of items per page.
-     *
-     * @return \Illuminate\Http\JsonResponse A JSON response containing the success status, data, message, and pagination information.
-     */
-    public function sendResponseWithPagination($data, $message = false, $pagination): JsonResponse
-    {
-        $response = [
-            'success' => true,
-            'data'    => $data,
-            'pagination' => [
-                'total_pages' => $pagination['total_pages'],
-                'current_page' => $pagination['current_page'],
-                'per_page' => $pagination['per_page'],
-            ],
-        ];
-
-        if (!empty($message)) {
-            $response['message'] = $message;
-        }
-
-        return response()->json($response, Response::HTTP_OK);
-    }
 }

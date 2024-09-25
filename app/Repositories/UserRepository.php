@@ -3,28 +3,32 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Spatie\QueryBuilder\QueryBuilder;
 use App\Interfaces\UserRepositoryInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserRepository implements UserRepositoryInterface
 {
     /**
      * Retrieve all users from the database, paginated and sorted by the specified order.
      *
-     * @param int $page The page number of the results to retrieve. Defaults to 1.
-     * @param int $per_page The number of users per page. Defaults to 25.
-     * @param string $order The sorting order. Defaults to 'DESC' (descending).
+     * @param Request $request
      *
-     * @return \Illuminate\Pagination\Paginator The paginated collection of user models.
+     * @return \Illuminate\Pagination\LengthAwarePaginator The paginated collection of user models.
      */
-    public function getAll($page = 1, $per_page = 25, $order = 'ASC')
+    public function getAll(Request $request): LengthAwarePaginator
     {
-        return User::orderBy('id', $order)
-                ->paginate(
-                    $per_page,
-                    ['*'],
-                    'users',
-                    $page
-                );
+        return QueryBuilder::for(User::class)
+            ->allowedFilters([
+                'name',
+                'email',
+            ])
+            ->defaultSort('id')
+            ->allowedSorts('id', 'name', 'email')
+            ->paginate($request->query->get('per_page', 100))
+            ->appends(request()->query());
     }
 
     /**
@@ -41,43 +45,16 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Store a new user in the database.
+     * Registers a new user in the database.
      *
-     * @param array $data The data to be stored in the user model.
+     * This function creates a new user record in the database using the provided data.
+     * It also assigns a default role to the newly created user.
      *
-     * @return \Illuminate\Database\Eloquent\Model The newly created user model.
+     * @param array $data The data to be stored in the user model. The array should contain the necessary fields required for user registration.
+     *
+     * @return \Illuminate\Database\Eloquent\Model|bool The newly created user model if registration is successful, or false if an error occurs.
      */
-    public function store(array $data)
-    {
-        return User::create($data);
-    }
-
-    /**
-     * Update an existing user in the database.
-     *
-     * @param int $id The unique identifier of the user to update.
-     * @param array $data The data to be updated in the user model.
-     *
-     * @return bool|null True if the update was successful, false if the user with the specified ID does not exist, or null if an error occurred.
-     */
-    public function update(array $data, $id)
-    {
-        return User::find($id)->update($data);
-    }
-
-    /**
-     * Delete an existing user from the database by its ID.
-     *
-     * @param int $id The unique identifier of the user to delete.
-     *
-     * @return bool|null True if the deletion was successful, false if the user with the specified ID does not exist, or null if an error occurred.
-     */
-    public function destroy($id)
-    {
-        return User::destroy($id);
-    }
-
-    public function register(array $data)
+    public function register(array $data): \Illuminate\Database\Eloquent\Model | Bool
     {
         $user = User::create($data);
         //By default the user is rol ASSGIN

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Interfaces\UserRepositoryInterface;
+use Illuminate\Database\Eloquent\Model;
 
 class RegisterController extends Controller
 {
@@ -18,9 +19,11 @@ class RegisterController extends Controller
      */
     public function __invoke(RegisterRequest $request)
     {
-        if ($user = $this->userRepository->register($request->validated())) {
+        $user = $this->userRepository->register($request->validated());
+
+        if ($user instanceof Model) {
             return $this->sendResponse($user);
         }
-        return $this->sendError("Error while registering", [], Response::HTTP_INTERNAL_SERVER_ERROR);
+        return $this->sendError("Error while registering", [], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }

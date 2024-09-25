@@ -3,9 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -77,8 +79,44 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email_verified_at' => 'datetime:d-m-Y H:i:s',
+            'created_at'        => 'datetime:d-m-Y H:i:s',
+            'updated_at'        => 'datetime:d-m-Y H:i:s',
+            'password'          => 'hashed',
         ];
+    }
+
+    /**
+     * Interact with email_verified_at.
+     */
+    protected function emailVerifiedAt(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value) => now(),
+        );
+    }
+
+    /**
+     * Interact with email_verified_at.
+     */
+    protected function rememberToken(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value) => Str::random(10),
+        );
+    }
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::created(function (User $user) {
+            if ($user->remember_token == null) {
+                $user->remember_token = Str::random(10);
+                $user->email_verified_at = now();
+                $user->save();
+            }
+        });
     }
 }

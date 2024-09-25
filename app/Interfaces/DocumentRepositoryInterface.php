@@ -2,15 +2,25 @@
 
 namespace App\Interfaces;
 
+use App\Models\Document;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 interface DocumentRepositoryInterface
 {
-    public function getAll($page = 1, $per_page = 25);
+    public function getAll(Request $request): LengthAwarePaginator;
 
-    public function getById($id);
+    public function find(int $id): ?Document;
 
-    public function store(array $data);
+    public function create(array $data): Document;
 
-    public function update(array $data, $id);
+    public function update(int $id, array $data): Document;
 
-    public function destroy($id);
+    public function delete(int $id): bool;
+
+    public function relevanceStats();
+
+    public function monthlyApprovals();
+
+    public function relevanceStatsWithDocuments();
 }
