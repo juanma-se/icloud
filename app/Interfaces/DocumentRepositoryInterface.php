@@ -5,10 +5,11 @@ namespace App\Interfaces;
 use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 interface DocumentRepositoryInterface
 {
-    public function getAll(Request $request): LengthAwarePaginator;
+    public function getAll(Request $request): Collection;
 
     public function find(int $id): ?Document;
 

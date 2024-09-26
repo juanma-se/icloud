@@ -6,6 +6,7 @@ use Illuminate\Http\Response;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
@@ -19,8 +20,9 @@ class LoginController extends Controller
             $request->authenticate();
             /** @var \App\Models\User $user **/
             $user = Auth::user();
-            $data['token']  =  $user->createToken('MyApp')->plainTextToken;
-            $data['user']   = $user;
+            $user->getAllPermissions();
+            $data['token']  = $user->createToken('MyApp')->plainTextToken;
+            $data['user']   = new UserResource($user);
 
             return $this->sendResponse($data, 'User login successfully.');
         } catch (\Throwable $th) {

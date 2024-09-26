@@ -62,7 +62,9 @@ class DocumentController extends Controller
     public function index(Request $request)
     {
         $documents = $this->documentRepository->getAll($request);
-
+        if ($documents->isEmpty()) {
+            return $this->sendResponse([], 'No documents found');
+        }
         return $this->sendResponse(new DocumentResourceCollection($documents), 'Showing documents');
     }
 
@@ -122,6 +124,7 @@ class DocumentController extends Controller
      */
     public function create(CreateDocumentRequest $request)
     {
+        $this->updloadFile($request);
         $document = $this->documentRepository->create($request->all());
 
         if ($document) {
@@ -197,5 +200,19 @@ class DocumentController extends Controller
         }
         return $this->sendError('Failed to delete document', [], 400);
 
+    }
+
+    private function updloadFile(&$request)
+    {
+        if ($request->hasFile('pdf_file')) {
+            $file = $request->file('pdf_file');
+            $filename = bin2hex(openssl_random_pseudo_bytes(8));
+            $extension = $file->extension();
+            $file_store = $filename. '.'. $extension;
+
+            $request->merge([
+                'pdf_path' => $file->storeAs('pdf-docs', $file_store, 'public'),
+            ]);
+        }
     }
 }

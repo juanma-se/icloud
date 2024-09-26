@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->enum('relevance', ['alta', 'media', 'baja']);
-            $table->date('approval_date');
-            $table->date('upload_date');
-            $table->string('pdf_path');
+            $table->date('approval_date')->nullable()->default(null);
+            $table->date('upload_date')->nullable()->default(null);
+            $table->string('pdf_path')->nullable()->default(null);
             $table->timestamps();
         });
     }

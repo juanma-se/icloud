@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateDocumentRequest extends FormRequest
@@ -27,7 +28,7 @@ class CreateDocumentRequest extends FormRequest
             'relevance'     => 'required|in:alta,media,baja',
             'approval_date' => 'nullable|date_format:d-m-Y H:i:s',
             'upload_date'   => 'nullable|date_format:d-m-Y H:i:s',
-            'pdf_path'      => 'nullable|string|regex:/^\/[A-Za-z0-9_\-\/]+\.pdf$/',
+            'pdf_file'      => 'nullable|file|mimes:pdf|max:10000',
         ];
     }
 }

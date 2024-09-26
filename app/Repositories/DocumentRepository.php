@@ -4,7 +4,9 @@ namespace App\Repositories;
 
 use App\Models\Document;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use App\Interfaces\DocumentRepositoryInterface;
@@ -19,7 +21,7 @@ class DocumentRepository implements DocumentRepositoryInterface
      *
      * @return \Illuminate\Pagination\LengthAwarePaginator The paginated collection of document models.
      */
-    public function getAll(Request $request): LengthAwarePaginator
+    public function getAll(Request $request): Collection
     {
         return QueryBuilder::for(Document::class)
                 ->allowedFilters([
@@ -30,8 +32,7 @@ class DocumentRepository implements DocumentRepositoryInterface
                 ])
                 ->defaultSort('id')
                 ->allowedSorts('id', 'relevance', 'approval_date')
-                ->paginate($request->query->get('per_page', 100))
-                ->appends(request()->query());
+                ->get();
     }
 
     /**
@@ -56,6 +57,7 @@ class DocumentRepository implements DocumentRepositoryInterface
      */
     public function create(array $data): Document
     {
+        $data['upload_date'] = now()->format('d-m-Y H:i:s');
         return Document::create($data);
     }
 

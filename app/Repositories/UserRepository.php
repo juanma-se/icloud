@@ -27,8 +27,7 @@ class UserRepository implements UserRepositoryInterface
             ])
             ->defaultSort('id')
             ->allowedSorts('id', 'name', 'email')
-            ->paginate($request->query->get('per_page', 100))
-            ->appends(request()->query());
+            ->get();
     }
 
     /**
