@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\QueryBuilder;
 use App\Interfaces\UserRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -18,7 +19,7 @@ class UserRepository implements UserRepositoryInterface
      *
      * @return \Illuminate\Pagination\LengthAwarePaginator The paginated collection of user models.
      */
-    public function getAll(Request $request): LengthAwarePaginator
+    public function getAll(Request $request): Collection
     {
         return QueryBuilder::for(User::class)
             ->allowedFilters([

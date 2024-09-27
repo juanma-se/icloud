@@ -11,12 +11,34 @@ use App\Http\Requests\UpdateDocumentRequest;
 use App\Interfaces\DocumentRepositoryInterface;
 use App\Http\Resources\DocumentResourceCollection;
 
-/**
- * @OA\Tag(
- *     name="Documents",
- *     description="API Endpoints for Documents"
- * )
- */
+    /**
+     * @OA\Tag(
+     *     name="Documents",
+     *     description="API Documents Controller"
+     * ),
+     * @OA\Info(title="API for Icloud", version="0.0.1")
+     * @OAS\SecurityScheme(
+     *      securityScheme="bearer_token",
+     *      type="http",
+     *      scheme="bearer"
+     * )
+     * @OA\Schema(
+     *   schema="DocumentResource",
+     *   type="object",
+     *   description="A single document resource with metadata",
+     *   @OA\Property(
+     *     property="data",
+     *     type="object",
+     *     @OA\Property(property="id", type="integer", example=100),
+     *     @OA\Property(property="name", type="string", example="Amet debitis qui enim."),
+     *     @OA\Property(property="description", type="string", example="Placeat eveniet et facilis similique. Quo quas quo cum dignissimos possimus et dolores."),
+     *     @OA\Property(property="relevance", type="string", example="media"),
+     *     @OA\Property(property="approval_date", type="string", format="date-time", example="05-10-2022 00:00:00"),
+     *     @OA\Property(property="upload_date", type="string", format="date-time", example="30-07-2024 00:00:00"),
+     *     @OA\Property(property="pdf_path", type="string", example="documents/slHq5FuhBb.pdf")
+     *   )
+     * )
+     */
 class DocumentController extends Controller
 {
     public function __construct(
@@ -27,34 +49,34 @@ class DocumentController extends Controller
      * @OA\Get(
      *     path="/documents",
      *     summary="Get all documents",
+     *     security={{"bearer_token":{}}},
      *     tags={"Documents"},
      *     @OA\Response(
      *         response=200,
      *         description="A list of documents",
-     *         @OA\JsonContent(ref="#/components/schemas/DocumentResourceCollection")
      *     ),
      *     @OA\Parameter(
-     *         name="page",
+     *         name="filter[relevance]",
      *         in="query",
-     *         description="Page number for pagination",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
-     *         name="per_page",
-     *         in="query",
-     *         description="Number of items per page",
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
-     *         name="relevance",
-     *         in="query",
-     *         description="Filter by relevance",
+     *         description="Filter by relevance. Posible filters are 'alta' 'media' and 'baja'",
      *         @OA\Schema(type="string")
-     *     )
+     *     ),
      *     @OA\Parameter(
-     *         name="approval_date",
+     *         name="filter[starts_before]",
      *         in="query",
-     *         description="Filter by aproval date",
+     *         description="Filter by aproval date. Date must be in YYYY-MM-DD format",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="filter[starts_after]",
+     *         in="query",
+     *         description="Filter by aproval date. Date must be in YYYY-MM-DD format",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="sort",
+     *         in="query",
+     *         description="Sorting documents by id, name, relevance or approval date. Adding - indicates descending order of results. Ex.: -id",
      *         @OA\Schema(type="string")
      *     )
      * )
@@ -72,6 +94,7 @@ class DocumentController extends Controller
      * @OA\Get(
      *     path="/documents/{id}",
      *     summary="Get a document by ID",
+     *     security={{"bearer_token":{}}},
      *     tags={"Documents"},
      *     @OA\Parameter(
      *         name="id",
@@ -83,7 +106,16 @@ class DocumentController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Document retrieved successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/DocumentResource")
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example="true"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 ref="#/components/schemas/DocumentResource"
+     *             ),
+     *             @OA\Property(property="message", type="string", example="Docuement retrieve successfully"),
+     *         )
      *     ),
      *     @OA\Response(
      *         response=404,
@@ -106,15 +138,22 @@ class DocumentController extends Controller
      * @OA\Post(
      *     path="/documents",
      *     summary="Create a new document",
+     *     security={{"bearer_token":{}}},
      *     tags={"Documents"},
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/CreateDocumentRequest")
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", description="Name of the document"),
+     *             @OA\Property(property="description", type="string", description="Description of the document"),
+     *             @OA\Property(property="relevance", type="string", enum={"alta", "media", "baja"}, description="Relevance of the document"),
+     *             @OA\Property(property="approval_date", type="string", format="date", description="Approval date of the document"),
+     *             @OA\Property(property="upload_date", type="string", format="date", description="Upload date of the document"),
+     *             @OA\Property(property="pdf_path", type="string", description="Path to the PDF file")
+     *         )
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Document created successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/DocumentResource")
+     *         description="Document created successfully"
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -137,6 +176,7 @@ class DocumentController extends Controller
      * @OA\Put(
      *     path="/documents/{id}",
      *     summary="Update an existing document",
+     *     security={{"bearer_token":{}}},
      *     tags={"Documents"},
      *     @OA\Parameter(
      *         name="id",
@@ -146,13 +186,11 @@ class DocumentController extends Controller
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/UpdateDocumentRequest")
+     *         required=true
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Document updated successfully",
-     *         @OA\JsonContent(ref="#/components/schemas/DocumentResource")
+     *         description="Document updated successfully"
      *     ),
      *     @OA\Response(
      *         response=400,
@@ -168,13 +206,13 @@ class DocumentController extends Controller
             return $this->sendResponse(new DocumentResource($document), 'Document update successfully');
         }
         return $this->sendError('Failed to update document', [], 400);
-
     }
 
     /**
      * @OA\Delete(
      *     path="/documents/{id}",
      *     summary="Delete a document by ID",
+     *     security={{"bearer_token":{}}},
      *     tags={"Documents"},
      *     @OA\Parameter(
      *         name="id",
@@ -199,7 +237,6 @@ class DocumentController extends Controller
             return $this->sendResponse([], 'Document deleted successfully');
         }
         return $this->sendError('Failed to delete document', [], 400);
-
     }
 
     private function updloadFile(&$request)

@@ -33,22 +33,22 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // create demo users
         $admin_user = \App\Models\User::factory()->create([
-            'name' => 'Example Administrator User',
-            'email' => 'admin@example.com',
+            'name' => 'Administrador User',
+            'email' => 'administrador@example.com',
             'password' => 'password'
         ]);
         $admin_user->assignRole($admin);
 
         $responsable_user = \App\Models\User::factory()->create([
-            'name' => 'Example Responsible User',
-            'email' => 'responsible@example.com',
+            'name' => 'Responsable User',
+            'email' => 'responsable@example.com',
             'password' => 'password'
         ]);
         $responsable_user->assignRole($responsible);
 
         $assgin_user = \App\Models\User::factory()->create([
-            'name' => 'Example Assing User',
-            'email' => 'assign@example.com',
+            'name' => 'Asignado User',
+            'email' => 'asignado@example.com',
             'password' => 'password'
         ]);
         $assgin_user->assignRole($assign);

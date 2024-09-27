@@ -31,7 +31,7 @@ class DocumentRepository implements DocumentRepositoryInterface
                     AllowedFilter::scope('starts_after'),
                 ])
                 ->defaultSort('id')
-                ->allowedSorts('id', 'relevance', 'approval_date')
+                ->allowedSorts('id', 'name', 'relevance', 'approval_date')
                 ->get();
     }
 

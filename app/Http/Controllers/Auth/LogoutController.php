@@ -11,7 +11,28 @@ use Illuminate\Support\Facades\Auth;
 class LogoutController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * @OA\Post(
+     *   path="/logout",
+     *   summary="Logout the authenticated user",
+     *   tags={"Authentication"},
+     *   security={{"bearer_token":{}}},
+     *   @OA\Response(
+     *     response=200,
+     *     description="User logout successfully",
+     *     @OA\JsonContent(
+     *       @OA\Property(property="success", type="boolean", example=true),
+     *       @OA\Property(property="message", type="string", example="User logout successfully.")
+     *     )
+     *   ),
+     *   @OA\Response(
+     *     response=401,
+     *     description="Unauthorized",
+     *     @OA\JsonContent(
+     *       @OA\Property(property="success", type="boolean", example=false),
+     *       @OA\Property(property="message", type="string", example="Unauthorized")
+     *     )
+     *   )
+     * )
      */
     public function __invoke(Request $request)
     {

@@ -14,13 +14,6 @@ class UserResourceCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        return [
-            'current_page'  => $this->currentPage(),
-            'data'          => $this->collection->toArray(),
-            'from'          => $this->firstItem(),
-            'per_page'      => $this->perPage(),
-            'to'            => $this->lastItem(),
-            'total'         => $this->total(),
-        ];
+        return parent::toArray($request);
     }
 }

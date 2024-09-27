@@ -64,11 +64,11 @@ class Document extends Model
 
     public function scopeStartsBefore(Builder $query, $date): Builder
     {
-        return $query->where('approval_date', '<=', Carbon::parse($date));
+        return $query->whereDate('approval_date', '<=', Carbon::parse($date));
     }
 
     public function scopeStartsAfter(Builder $query, $date): Builder
     {
-        return $query->where('approval_date', '>=', Carbon::parse($date));
+        return $query->whereDate('approval_date', '>=', Carbon::parse($date));
     }
 }
