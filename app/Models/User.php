@@ -15,11 +15,11 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles, HasApiTokens;
 
-    const ADMIN_ROLE = 'administrator';
+    const ADMIN_ROLE = 'administrador';
 
-    const RESPONSIBLE_ROLE = 'responsible';
+    const RESPONSIBLE_ROLE = 'responsable';
 
-    const ASSIGN_ROLE = 'assign';
+    const ASSIGN_ROLE = 'asignado';
 
     const PERMISSIONS = [
         'view',
@@ -45,9 +45,9 @@ class User extends Authenticatable
     ];
 
     const COMPOSE_PERMISSIONS_AND_ROLES = [
-        'administrator' => self::ADMIN_ROLE_PERMISSIONS,
-        'responsible' => self::RESPONSIBLE_ROLE_PERMISSIONS,
-        'assign' => self::ASSIGN_ROLE_PERMISSIONS,
+        'administrador' => self::ADMIN_ROLE_PERMISSIONS,
+        'responsable' => self::RESPONSIBLE_ROLE_PERMISSIONS,
+        'asignado' => self::ASSIGN_ROLE_PERMISSIONS,
     ];
 
     /**

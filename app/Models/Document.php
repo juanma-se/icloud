@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DateTime;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Model;
@@ -48,7 +49,7 @@ class Document extends Model
     protected function approvalDate(): Attribute
     {
         return Attribute::make(
-            set: fn (string $value) => Carbon::createFromFormat('d-m-Y H:i:s', $value),
+            set: fn ($value) => $value instanceof DateTime ? $value : Carbon::createFromFormat('d-m-Y H:i:s', $value),
         );
     }
 
@@ -58,7 +59,7 @@ class Document extends Model
     protected function uploadDate(): Attribute
     {
         return Attribute::make(
-            set: fn (string $value) => Carbon::createFromFormat('d-m-Y H:i:s', $value),
+            set: fn ($value) => $value instanceof DateTime ? $value : Carbon::createFromFormat('d-m-Y H:i:s', $value),
         );
     }
 

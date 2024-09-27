@@ -48,19 +48,26 @@ class DocumentRepository implements DocumentRepositoryInterface
     }
 
     /**
-     * Update or create a document in the database.
+     * Create a document in the database.
      *
-     * @param int $id The unique identifier of the document to update or create.
      * @param array $data An associative array of key-value pairs representing the document's attributes.
      *
      * @return Document The updated or newly created document model.
      */
     public function create(array $data): Document
     {
-        $data['upload_date'] = now()->format('d-m-Y H:i:s');
+        //$data['upload_date'] = now()->format('d-m-Y H:i:s');
         return Document::create($data);
     }
 
+    /**
+     * Uupdate a document in the database.
+     *
+     * @param int $id The unique identifier of the document to update.
+     * @param array $data An associative array of key-value pairs representing the document's attributes.
+     *
+     * @return Document The updated document model.
+     */
     public function update(int $id, array $data): Document
     {
         Document::where(['id' =>  $id])
